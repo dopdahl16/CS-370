@@ -1,0 +1,81 @@
+#lang scheme
+
+(require (lib "tls.ss" "Luther"))
+
+
+
+;Assume that lisa and lisb are lists of the same length or that lisa is exactly one element longer than lisb (and the procedure deals with either situation). Returns the list that results from “zipping” together lisa and lisb.
+;lisa and lisb must be of the same length or lisa must be no more than one element longer
+;O(length of lisa + length of lisb)
+
+(define zip
+  (lambda (lisa lisb)
+    (cond
+      ((null? lisa) '())
+      ((null? lisb) lisa)
+      ((null? (cdr lisa)) (cons (car lisa) lisb))
+      (else (cons (car lisa) (zip lisb (cdr lisa)))))))
+
+
+
+;Assume that lis is a list. Returns the pair of lists that results from “unzipping” lis (placing the last element of lis into the first element of the result, if lis has an odd number of elements).
+;
+;O()
+
+(define unzip
+  (lambda (lis)
+    (cond
+      ((null? lis) (cons '() (cons '() '())))
+      ((null? (cdr lis)) (cons (cons (car lis) '()) (cons '() '())))
+      ;((null? (cdr (cdr lis))) (cons (cons (car lis) '()) (cons '() '()))) Not sure if this condition is necessary
+      ;((null? lis) (cons '() (cons '() '())))
+      (else (cons (cons (cons (car lis) '()) (unzip (car (cdr (cdr lis))))) (cons '() '()))))))
+
+
+
+;Assume that lis is a list. Returns the list of all tails of lis, in order from longest to shortest.
+;
+;
+
+(define all-tails
+  (lambda (lis)
+    (cond)))
+
+
+
+;Assume that lis is a list. Returns the list of all heads of lis, in order from shortest to longest.
+;
+;
+
+(define all-heads
+  (lambda (lis)
+    (cond)))
+
+
+
+;Assume los is a list of symbols. Returns the list in which all runs of two or more adjacent duplicate symbols have been eliminated and replaced by a single occurrence of that symbol.
+;
+;
+
+(define without-adjacent-duplicates
+  (lambda (los)
+    (cond)))
+
+
+
+;Assume los is a list of symbols. Returns the list in which all runs of adjacent equal symbols have been grouped into lists.
+;
+;
+
+(define adjacent-equals-grouped
+  (lambda (los)
+    (cond)))
+
+
+
+(unzip '())
+(unzip '(a))
+(unzip '(a b))
+(unzip '(a b c))
+(unzip '(a b c d))
+(unzip '(a b c d e))
