@@ -1,3 +1,7 @@
+;Assignment 1
+;Author: Daniel Opdahl
+;Date: 2-20-2020
+
 #lang scheme
 
 (require (lib "tls.ss" "Luther"))
@@ -24,7 +28,9 @@
 
 (define unzip
   (lambda (lis)
-    (cons (every-other lis) (cons (every-other (cdr lis)) '()))))
+    (cond
+      ((null? lis) '(()()))
+      (else (cons (every-other lis) (cons (every-other (cdr lis)) '()))))))
 
 
 
@@ -54,20 +60,20 @@
 
 
 ;Assume that lis is a list. Returns the list of all heads of lis, in order from shortest to longest.
-;
-;
+;lis must be a list
+;O(length of los ^2)                    MAKE SURE YOU ASK ABOUT THIS - I AM NOT SURE ABOUT THIS COMPLEXITY
 
 (define all-heads
   (lambda (lis)
     (cond
       ((null? lis) '(()))
-      (else (cons (all-heads (cdr lis)) lis)))))
+      (else (snoc lis (all-heads (rdc lis)))))))
 
 
 
 ;Assume los is a list of symbols. Returns the list in which all runs of two or more adjacent duplicate symbols have been eliminated and replaced by a single occurrence of that symbol.
-;
-;
+;los must be a list of symbols
+;O(length of los)
 
 (define without-adjacent-duplicates
   (lambda (los)
@@ -75,18 +81,22 @@
       ((null? los) '())
       ((null? (cdr los)) los)
       ((eq? (car los) (car (cdr los))) (without-adjacent-duplicates (cdr los))) 
-      (else los))))
+      (else (cons (car los) (without-adjacent-duplicates (cdr los)))))))
 
 
 
 ;Assume los is a list of symbols. Returns the list in which all runs of adjacent equal symbols have been grouped into lists.
-;
-;
+;los must be a list of symbols
+;O(length of los ^2)                    MAKE SURE YOU ASK ABOUT THIS - I AM NOT SURE ABOUT THIS COMPLEXITY
 
 (define adjacent-equals-grouped
   (lambda (los)
-    (cond)))
-
+    (cond
+      ((null? los) '())
+      ((null? (cdr los)) (cons los '()))
+      ((eq? (car los) (car (cdr los))) (cons (cons (car los) (car (adjacent-equals-grouped (cdr los)))) (cdr (adjacent-equals-grouped (cdr los)))))
+      (else (cons (cons (car los) '()) (adjacent-equals-grouped (cdr los)))))))
+      
 
 
 ;;;;;;;;;;Example procedures defined in class;;;;;;;;;
