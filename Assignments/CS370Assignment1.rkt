@@ -61,7 +61,7 @@
 
 ;Assume that lis is a list. Returns the list of all heads of lis, in order from shortest to longest.
 ;lis must be a list
-;O(length of los ^2)                    MAKE SURE YOU ASK ABOUT THIS - I AM NOT SURE ABOUT THIS COMPLEXITY
+;O(length of los^2) 
 
 (define all-heads
   (lambda (lis)
@@ -87,7 +87,7 @@
 
 ;Assume los is a list of symbols. Returns the list in which all runs of adjacent equal symbols have been grouped into lists.
 ;los must be a list of symbols
-;O(length of los ^2)                    MAKE SURE YOU ASK ABOUT THIS - I AM NOT SURE ABOUT THIS COMPLEXITY
+;O(2^length of los)
 
 (define adjacent-equals-grouped
   (lambda (los)
