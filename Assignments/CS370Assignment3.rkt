@@ -26,7 +26,7 @@
 
 (define uncurried-binary
   (lambda (curriedBinaryProc)
-    (list curriedBinaryProc)))
+    '()))
     
 
 
@@ -48,7 +48,9 @@
 ;
 ;
 
-(define rreducer)
+(define rreducer
+  (lambda (binaryProc unaryProc zeroaryProc)
+    '()))
 
 
 
@@ -56,7 +58,9 @@
 ;
 ;
 
-(define lreducer)
+(define lreducer
+  (lambda (binaryProc unaryProc zeroaryProc)
+    '()))
 
 
 
@@ -64,4 +68,6 @@
 ;
 ;
 
-(define subst-every-other-sf)
+(define subst-every-other-sf
+  (lambda (old new los+ succeed)
+    '()))
