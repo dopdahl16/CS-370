@@ -1,0 +1,16 @@
+;Assignment 3
+;Author: Daniel Opdahl
+;Date: 2-25-2020
+
+#lang scheme
+
+(require (lib "tls.ss" "Luther"))
+
+
+(define ggg
+  (lambda 
+
+
+(define curried-binary
+  (lambda binaryProc
+    (lambda 
