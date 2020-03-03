@@ -22,11 +22,12 @@
 
 ;
 ;
-;
+;Done
 
 (define uncurried-binary
   (lambda (curriedBinaryProc)
-    '()))
+      (lambda (element1 element2)
+        ((curriedBinaryProc element1) element2))))
     
 
 
@@ -46,11 +47,15 @@
 
 ;
 ;
-;
+;Done
 
 (define rreducer
   (lambda (binaryProc unaryProc zeroaryProc)
-    '()))
+    (lambda (lat)
+      (cond
+        ((eq? (length lat) 0) (zeroaryProc))
+        ((eq? (length lat) 1) (unaryProc (car lat)))
+        (else (binaryProc (car lat) ((rreducer binaryProc unaryProc zeroaryProc) (cdr lat))))))))
 
 
 
@@ -60,7 +65,11 @@
 
 (define lreducer
   (lambda (binaryProc unaryProc zeroaryProc)
-    '()))
+    (lambda (lat)
+      (cond
+        ((eq? (length lat) 0) (zeroaryProc))
+        ((eq? (length lat) 1) (unaryProc (car lat)))
+        (else (binaryProc ((lreducer binaryProc unaryProc zeroaryProc) (cdr lat)) (car lat)))))))
 
 
 
