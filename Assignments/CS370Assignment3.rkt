@@ -69,8 +69,7 @@
       (cond
         ((eq? (length lat) 0) (zeroaryProc))
         ((eq? (length lat) 1) (unaryProc (car lat)))
-        (else (binaryProc ((lreducer binaryProc unaryProc zeroaryProc) (cdr lat)) (car lat)))))))
-
+        (else ((lreducer binaryProc unaryProc zeroaryProc) (cons (binaryProc (car lat) (car (cdr lat))) (cdr (cdr lat)))))))))
 
 
 ;
