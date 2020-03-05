@@ -78,19 +78,43 @@
 
 (define subst-every-other-sf
   (lambda (old new los+ succeed)
-    (subst-every-other-helper old new los+ 1)))
+    (subst-every-other-helper old new los+ 1 succeed)))
+
+
+
+;
+;
+;
 
 (define subst-every-other-helper
-  (lambda (old new los+ bit)
+  (lambda (old new los+ bit succeed)
     (cond
       ((null? los+) '())
+;      ((eq? (cdr los+) '()) (succeed (cons (car los+)
+;             (subst-every-other-helper old new (cdr los+) bit succeed)) (odd? (count old 0 los+))))
       ((not (atom? (car los+)))
-       (cons (subst-every-other-helper old new (car los+) bit)
-             (subst-every-other-helper old new (cdr los+) bit)))
+       (succeed (cons (subst-every-other-helper old new (car los+) bit succeed)
+             (subst-every-other-helper old new (cdr los+) bit succeed)) (odd? (count old 0 los+))))
       ((and (eq? (car los+) old) (not (zero? bit)))
-       (cons new (subst-every-other-helper old new (cdr los+) 0)))
+       (succeed (cons new
+             (subst-every-other-helper old new (cdr los+) 0 succeed)) (odd? (count old 0 los+))))
       ((and (eq? (car los+) old) (zero? bit))
-       (cons old (subst-every-other-helper old new (cdr los+) 1)))
+       (succeed (cons old
+             (subst-every-other-helper old new (cdr los+) 1 succeed)) (odd? (count old 0 los+))))
       (else
-       (cons (car los+)
-             (subst-every-other-helper old new (cdr los+) bit))))))
+       (succeed (cons (subst-every-other-helper old new (car los+) bit succeed)
+             (subst-every-other-helper old new (cdr los+) bit succeed)) (odd? (count old 0 los+)))))))
+
+
+
+(define count
+  (lambda (old tot los+)
+    (cond
+      ((null? los+) '())
+      ((and (eq? (cdr los+) '()) (eq? (car los+) old)) (+ tot 1))
+      ((and (eq? (cdr los+) '()) (not (eq? (car los+) old))) tot)
+      ((eq? (car los+) old) (count old (+ tot 1) (cdr los+)))
+      (else (count old tot (cdr los+))))))
+
+(subst-every-other-sf 'a 'b '(a a) (lambda (result replaced)
+replaced))
