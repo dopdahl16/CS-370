@@ -48,8 +48,14 @@
     (cond
       ((null? lis) '())
       ((null? (cdr lis)) (cons lis '()))
-      ((related? (car lis) (car (cdr lis))) (cons (cons (car lis) (car (adjacent-related-grouped related? (cdr lis)))) (cdr (adjacent-related-grouped related? (cdr lis)))))
-      (else (cons (cons (car lis) '()) (adjacent-related-grouped related? (cdr lis)))))))
+      ((related? (car lis) (car (cdr lis)))
+       (cons
+        (cons (car lis)
+              (car (adjacent-related-grouped related?
+                                             (cdr lis))))
+        (cdr (adjacent-related-grouped related? (cdr lis)))))
+      (else (cons (cons (car lis) '())
+                  (adjacent-related-grouped related? (cdr lis)))))))
 
 
 
@@ -85,7 +91,9 @@
       (cond
         ((eq? (length lat) 0) (zeroaryProc))
         ((eq? (length lat) 1) (unaryProc (car lat)))
-        (else ((lreducer binaryProc unaryProc zeroaryProc) (cons (binaryProc (car lat) (car (cdr lat))) (cdr (cdr lat)))))))))
+        (else ((lreducer binaryProc unaryProc zeroaryProc)
+               (cons (binaryProc (car lat) (car (cdr lat)))
+                     (cdr (cdr lat)))))))))
 
 
 
@@ -136,17 +144,29 @@
     (cond
       ((null? los+) (succeed '() #f))
       ((not (atom? (car los+)))
-       (succeed (cons (subst-every-other-helper old new (car los+) bit succeed)
-             (subst-every-other-helper old new (cdr los+) bit succeed)) (odd? (count old 0 los+))))
+       (succeed (cons
+                 (subst-every-other-helper old new
+                                           (car los+)
+                                            bit succeed)
+             (subst-every-other-helper old new
+                                       (cdr los+)
+                                        bit succeed))
+                (odd? (count old 0 los+))))
       ((and (eq? (car los+) old) (not (zero? bit)))
        (succeed (cons new
-             (subst-every-other-helper old new (cdr los+) 0 succeed)) (odd? (count old 0 los+))))
+             (subst-every-other-helper old new
+                                       (cdr los+) 0 succeed))
+                (odd? (count old 0 los+))))
       ((and (eq? (car los+) old) (zero? bit))
        (succeed (cons old
-             (subst-every-other-helper old new (cdr los+) 1 succeed)) (odd? (count old 0 los+))))
+             (subst-every-other-helper old new
+                                       (cdr los+) 1 succeed))
+                (odd? (count old 0 los+))))
       (else
        (succeed (cons (car los+)
-             (subst-every-other-helper old new (cdr los+) bit succeed)) (odd? (count old 0 los+)))))))
+             (subst-every-other-helper old new
+                                       (cdr los+) bit succeed))
+                (odd? (count old 0 los+)))))))
 
 
 
