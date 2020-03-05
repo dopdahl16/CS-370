@@ -89,9 +89,7 @@
 (define subst-every-other-helper
   (lambda (old new los+ bit succeed)
     (cond
-      ((null? los+) '())
-;      ((eq? (cdr los+) '()) (succeed (cons (car los+)
-;             (subst-every-other-helper old new (cdr los+) bit succeed)) (odd? (count old 0 los+))))
+      ((null? los+) (succeed '() #f))
       ((not (atom? (car los+)))
        (succeed (cons (subst-every-other-helper old new (car los+) bit succeed)
              (subst-every-other-helper old new (cdr los+) bit succeed)) (odd? (count old 0 los+))))
@@ -102,7 +100,7 @@
        (succeed (cons old
              (subst-every-other-helper old new (cdr los+) 1 succeed)) (odd? (count old 0 los+))))
       (else
-       (succeed (cons (subst-every-other-helper old new (car los+) bit succeed)
+       (succeed (cons (car los+)
              (subst-every-other-helper old new (cdr los+) bit succeed)) (odd? (count old 0 los+)))))))
 
 
@@ -116,5 +114,14 @@
       ((eq? (car los+) old) (count old (+ tot 1) (cdr los+)))
       (else (count old tot (cdr los+))))))
 
-(subst-every-other-sf 'a 'b '(a a) (lambda (result replaced)
-replaced))
+
+
+
+
+
+
+
+(subst-every-other-sf 'a 'x '(a (b (a (c (a (d ())))))) (lambda (result
+replaced) result))
+(subst-every-other-sf 'a 'x '(a (b (a (c (a (d ())))))) (lambda (result
+replaced) replaced))
