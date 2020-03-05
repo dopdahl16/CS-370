@@ -61,7 +61,7 @@
 
 ;
 ;
-;
+;Done
 
 (define lreducer
   (lambda (binaryProc unaryProc zeroaryProc)
@@ -78,4 +78,19 @@
 
 (define subst-every-other-sf
   (lambda (old new los+ succeed)
-    '()))
+    (subst-every-other-helper old new los+ 1)))
+
+(define subst-every-other-helper
+  (lambda (old new los+ bit)
+    (cond
+      ((null? los+) '())
+      ((not (atom? (car los+)))
+       (cons (subst-every-other-helper old new (car los+) bit)
+             (subst-every-other-helper old new (cdr los+) bit)))
+      ((and (eq? (car los+) old) (not (zero? bit)))
+       (cons new (subst-every-other-helper old new (cdr los+) 0)))
+      ((and (eq? (car los+) old) (zero? bit))
+       (cons old (subst-every-other-helper old new (cdr los+) 1)))
+      (else
+       (cons (car los+)
+             (subst-every-other-helper old new (cdr los+) bit))))))
