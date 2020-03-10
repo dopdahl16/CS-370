@@ -1,0 +1,15 @@
+#lang scheme
+
+(require (lib "tls.ss" "Luther"))
+
+(define do
+  (lambda ()
+    (void)
+    (display 'a)
+    (display 'b)
+    (display 'x)
+    (display 'y)))
+
+(define dont
+  (lambda ()
+    (void)))
