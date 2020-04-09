@@ -2,28 +2,39 @@
 
 (require (lib "tls.ss" "Luther"))
 
-(define do1
-  (lambda ()
-    (void)
-    (display 'x)
-    (display 'y)
-    (display 'z)))
-
-;running this line of code
-(do1)
-
-;produces the same output as this line of code
-(begin (display 'x) (display 'y) (display 'z))
 
 
+([lambda (moot) ([lambda (moot) (display 'c)] {display 'b})] {display 'a})
+
+(begin (display 'a) (display 'b) (display 'c))
 
 
-(define do2
-  (lambda ()
-    (void)))
+((lambda (x) (+ x x)) 4)
+[λ (dummy) ([λ (dummy) (display 'c)] {display 'b})]
+'()
+([lambda (moot) (display 'b)] (display 'a))
+'()
+[λ (dummy) (display 'c)]
 
-;running this line of code
-(do2)
+'()
+(begin cons (begin (begin (display 'a))) '())
+'()
+([lambda (moot) (display (cons 'a '()))] (display 'a))
 
-;produces the same output as this line of code
-(begin)
+(begin (begin (begin )))
+
+
+
+
+
+
+'aaaaaaaaaaaa
+([lambda (moot) ([lambda (moot) (display 'z)] {display 'y})] {display 'x})
+
+'bbbbbbbbbb
+
+(begin (display 'a) (display (list (begin 'x 'y 'z))))
+
+((lambda (moot) (display (list (begin 'x 'y 'z)))) (display 'a))
+((lambda (moot) (display (list ([lambda (moot) ([lambda (moot) 'z] 'y)] 'x)
+))) (display 'a))

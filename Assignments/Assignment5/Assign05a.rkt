@@ -1,0 +1,130 @@
+#lang scheme
+
+
+;
+; A Scheme Meta-Circular Interpreter, Version 0.1 (interp00.1.ss)
+; (based on version 0)
+;
+; Adds pair?, the (lambda sym ...) and (lambda (sym1 ... symn . symn+1) ...) forms,
+; and a basic version of map)
+;
+
+(define scheme-value
+  (lambda (expr)
+    (expr-value
+     expr
+     '((car . *car*) (cdr . *cdr*) (cons . *cons*) (eq? . *eq?*) (symbol? . *symbol?*) (apply . *apply*) (map . *map*) (pair? . *pair?*)))))
+
+(define expr-value
+  (lambda (expr env)
+    (cond
+      ((eq? expr #t) #t)
+      ((eq? expr #f) #f)
+      ((eq? expr '()) '())
+      ((symbol? expr) (sym-value expr env))
+      ((eq? (car expr) 'quote) (cadr expr))
+      ((eq? (car expr) 'cond) (cond-value (cdr expr) env))
+      ((eq? (car expr) 'lambda)
+       (cond
+         ((eq? (length expr) 3) (cons '*closure* (cons (cadr expr) (cons (caddr expr) (cons env '()))))); do the original way
+         ((eq? (length expr) 4) (cons '*closure* (cons (cadr expr) (cons (caddr expr) (cons (cadddr expr) (cons env '())))))))) ;adjusted to account for extra scope name in 2nd position? What do we do with the scope name? - now there will always be 4 things in a lambda
+      ((eq? (car expr) '::) (app-value (expr-value (cadr expr) env) (map (lambda (rand) (expr-value rand env)) (cddr expr)) env))
+      (else (app-value (expr-value (car expr) env) (map (lambda (rand) (expr-value rand env)) (cdr expr)) env)))))
+
+(define sym-value
+  (lambda (sym env)
+    (cond
+      ((eq? sym (caar env)) (cdar env))
+      ((eq? sym (cadar env)) (cddar env))
+      (else (sym-value sym (cdr env))))))
+
+(define cond-value
+  (lambda (clauses env)
+    (cond
+      ((eq? (caar clauses) 'else) (expr-value (cadar clauses) env))
+      ((eq? (expr-value (caar clauses) env) #f) (cond-value (cdr clauses) env))
+      (else (expr-value (cadar clauses) env)))))
+
+(define app-value
+  (lambda (rator rand-list env)
+    (cond
+      ((symbol? rator)
+       (cond
+         ((eq? rator '*car*) (caar rand-list))
+         ((eq? rator '*cdr*) (cdar rand-list))
+         ((eq? rator '*cons*) (cons (car rand-list) (cadr rand-list)))
+         ((eq? rator '*eq?*) (eq? (car rand-list) (cadr rand-list)))
+         ((eq? rator '*symbol?*) (symbol? (car rand-list)))
+         ((eq? rator '*apply*) (app-value (car rand-list) (cadr rand-list) env))
+         ((eq? rator '*map*) (map (lambda (rand) (app-value (car rand-list) (cons rand '()) env)) (cadr rand-list)))
+         ((eq? rator '*pair?*) (pair? (car rand-list)))))
+      ((eq? (car rator) '*closure*)
+       (cond
+         ((eq? (length rator) 4) (expr-value (caddr rator) (augmented-env-no-scope (cadr rator) rand-list (cadddr rator))));do the og way
+         ((eq? (length rator) 5) (expr-value (cadddr rator) (augmented-env-with-scope (cadr rator) (caddr rator) rand-list (cadddr (cdr rator))))))))))
+
+(define augmented-env-with-scope
+  (lambda (scope sym-list rand-list env)
+    (cond
+      ((eq? sym-list '()) env)
+      ((symbol? sym-list) (cons (cons scope (cons sym-list rand-list)) env))
+      (else (cons (cons scope (cons (car sym-list) (car rand-list))) (augmented-env-with-scope scope (cdr sym-list) (cdr rand-list) env))))))
+
+(define augmented-env-no-scope
+  (lambda (sym-list rand-list env)
+    (cond
+      ((eq? sym-list '()) env)
+      ((symbol? sym-list) (cons (cons sym-list rand-list) env))
+      (else (cons (cons (car sym-list) (car rand-list)) (augmented-env-no-scope (cdr sym-list) (cdr rand-list) env)))))) ; all of this was changed
+
+
+
+
+
+
+
+(scheme-value
+ '((lambda a (x)
+     ((lambda b x
+        ((lambda c (x)
+           ((lambda d (w . x)
+              ((lambda e (x)
+                 ((lambda c (x)
+                    ((lambda f (x)
+                       ((lambda x
+                          x)
+                        (:: a x) (:: b x) (:: c x) (:: d x) (:: e x) (:: f x) x))
+                     'one))
+                  'two))
+               'three))
+            'four1 'four2 'four3 'four4))
+         'five))
+      'six))
+   'seven))
+;
+;
+;(scheme-value '(lambda () 'a))
+;(scheme-value
+;    '((lambda a  (x y)
+;        (lambda b () 'p))
+;      'xvalue
+;      'yvalue))
+;(scheme-value
+;    '((lambda (x)
+;        ((lambda (x)
+;           (lambda () 'a))
+;         'two))
+;      'one))
+;(scheme-value
+;    '((lambda (x)
+;        ((lambda (x)
+;           x)
+;         'two))
+;      'one))
+(scheme-value
+    '((lambda q (x)
+        ((lambda t (x)
+           (:: t x))
+         'BBB))
+       'AAA))
+

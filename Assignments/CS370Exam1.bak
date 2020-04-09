@@ -1,0 +1,16 @@
+;Exam 1
+;Author: Daniel Opdahl
+;Date: 3-29-2020
+
+#lang scheme
+
+(require (lib "tls.ss" "Luther"))
+
+
+
+;Returns a list containing the same elements as lis, but nested deeper and deeper as you go from right to left.
+;lis must be a list
+;O(binaryProc)
+
+(define deepen-right
+  (lambda (lis)))
