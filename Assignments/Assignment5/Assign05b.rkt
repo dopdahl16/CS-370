@@ -1,12 +1,12 @@
+;Assignment 5b
+;Author: Daniel Opdahl
+;Date: 4-9-2020
+
 #lang scheme
 
 
 ;
-; A Scheme Meta-Circular Interpreter, Version 0.1 (interp00.1.ss)
-; (based on version 0)
-;
-; Adds pair?, the (lambda sym ...) and (lambda (sym1 ... symn . symn+1) ...) forms,
-; and a basic version of map)
+; A Scheme Meta-Circular Interpreter, Version 0.15b
 ;
 
 (define scheme-value

@@ -1,12 +1,12 @@
+;Assignment 5a
+;Author: Daniel Opdahl
+;Date: 4-9-2020
+
 #lang scheme
 
 
 ;
-; A Scheme Meta-Circular Interpreter, Version 0.1 (interp00.1.ss)
-; (based on version 0)
-;
-; Adds pair?, the (lambda sym ...) and (lambda (sym1 ... symn . symn+1) ...) forms,
-; and a basic version of map)
+; A Scheme Meta-Circular Interpreter, Version 0.15a
 ;
 
 (define scheme-value
@@ -28,7 +28,7 @@
        (cond
          ((eq? (length expr) 3) (cons '*closure* (cons (cadr expr) (cons (caddr expr) (cons env '()))))); do the original way
          ((eq? (length expr) 4) (cons '*closure* (cons (cadr expr) (cons (caddr expr) (cons (cadddr expr) (cons env '())))))))) ;adjusted to account for extra scope name in 2nd position? What do we do with the scope name? - now there will always be 4 things in a lambda
-      ((eq? (car expr) '::) (app-value (expr-value (cadr expr) env) (map (lambda (rand) (expr-value rand env)) (cddr expr)) env))
+      ((eq? (car expr) '::) (app-value (cdr expr) (map (lambda (rand) (expr-value rand env)) (cddr expr)) env))
       (else (app-value (expr-value (car expr) env) (map (lambda (rand) (expr-value rand env)) (cdr expr)) env)))))
 
 (define sym-value
@@ -36,6 +36,9 @@
     (cond
       ((eq? sym (caar env)) (cdar env))
       ((eq? sym (cadar env)) (cddar env))
+      ((list? sym)
+       (cond
+         ((eq? (car sym) (car (cons (car (car env)) (cons (cadr (car env)) '())))) (cddar env))))
       (else (sym-value sym (cdr env))))))
 
 (define cond-value
@@ -61,7 +64,8 @@
       ((eq? (car rator) '*closure*)
        (cond
          ((eq? (length rator) 4) (expr-value (caddr rator) (augmented-env-no-scope (cadr rator) rand-list (cadddr rator))));do the og way
-         ((eq? (length rator) 5) (expr-value (cadddr rator) (augmented-env-with-scope (cadr rator) (caddr rator) rand-list (cadddr (cdr rator))))))))))
+         ((eq? (length rator) 5) (expr-value (cadddr rator) (augmented-env-with-scope (cadr rator) (caddr rator) rand-list (cadddr (cdr rator)))))))
+      ((eq? (length rator) 2) (sym-value rator env)))))
 
 (define augmented-env-with-scope
   (lambda (scope sym-list rand-list env)
